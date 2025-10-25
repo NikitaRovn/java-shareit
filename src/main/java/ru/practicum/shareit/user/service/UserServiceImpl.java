@@ -30,14 +30,18 @@ public class UserServiceImpl implements UserService {
         User userToUpdate = userRepository.findUserByUserId(userId);
         if (userToUpdate == null) throw new UserNotFoundException(userId);
 
-        userToUpdate.setName(userUpdateDto.getName() != null ? userUpdateDto.getName() : userToUpdate.getName());
+        userToUpdate.setName(
+                userUpdateDto.getName() != null ? userUpdateDto.getName() : userToUpdate.getName()
+        );
 
-        String email = userUpdateDto.getEmail();
-        if (email != null) {
-            User userWithSameEmail = userRepository.findUserByUserEmail(email);
-            if (userWithSameEmail != null) throw new UserFoundException(email);
+        String newEmail = userUpdateDto.getEmail();
+        if (newEmail != null) {
+            User existing = userRepository.findUserByUserEmail(newEmail);
+            if (existing != null && !existing.getId().equals(userToUpdate.getId())) {
+                throw new UserFoundException(newEmail);
+            }
+            userToUpdate.setEmail(newEmail);
         }
-        userToUpdate.setEmail(userUpdateDto.getEmail() != null ? userUpdateDto.getEmail() : userToUpdate.getEmail());
 
         return userRepository.updateUser(userToUpdate);
     }

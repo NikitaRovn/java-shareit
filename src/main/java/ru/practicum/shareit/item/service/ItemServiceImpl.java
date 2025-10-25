@@ -42,21 +42,15 @@ public class ItemServiceImpl implements ItemService {
             throw new NotOwnerException(itemId);
         }
 
-        itemToUpdate.setName(
-                itemUpdateDto.getName() != null ?
-                        itemUpdateDto.getName() :
-                        itemToUpdate.getName()
-        );
-        itemToUpdate.setDescription(
-                itemUpdateDto.getDescription() != null ?
-                        itemUpdateDto.getDescription() :
-                        itemToUpdate.getDescription()
-        );
-        itemToUpdate.setAvailable(
-                itemUpdateDto.getAvailable() != null ?
-                        itemUpdateDto.getAvailable() :
-                        itemToUpdate.getAvailable()
-        );
+        if (itemUpdateDto.getName() != null) {
+            itemToUpdate.setName(itemUpdateDto.getName());
+        }
+        if (itemUpdateDto.getDescription() != null) {
+            itemToUpdate.setDescription(itemUpdateDto.getDescription());
+        }
+        if (itemUpdateDto.getAvailable() != null) {
+            itemToUpdate.setAvailable(itemUpdateDto.getAvailable());
+        }
 
         return itemRepository.updateItem(itemToUpdate);
     }
