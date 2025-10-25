@@ -25,10 +25,8 @@ public class UserRepositoryInMemoryImpl implements UserRepository {
 
     @Override
     public User updateUser(User user) {
-        Long userId = user.getId();
-        User currentUser = findUserByUserId(userId);
-        users.put(userId, currentUser);
-        return currentUser;
+        users.put(user.getId(), user);
+        return user;
     }
 
     @Override

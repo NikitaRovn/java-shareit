@@ -10,11 +10,15 @@ import java.util.Map;
 @Repository
 public class ItemRepositoryInMemoryImpl implements ItemRepository {
     private final Map<Long, Item> items = new HashMap<>();
-    private Long lastId = 1L;
+    private static Long lastId = 1L;
+
+    private static Long generateNewId() {
+        return lastId++;
+    }
 
     @Override
     public Item saveItem(Item item) {
-        Long newId = lastId++;
+        Long newId = generateNewId();
         item.setId(newId);
         items.put(newId, item);
         return item;
@@ -22,10 +26,8 @@ public class ItemRepositoryInMemoryImpl implements ItemRepository {
 
     @Override
     public Item updateItem(Item item) {
-        Long itemId = item.getId();
-        Item currentItem = findItemByItemId(itemId);
-        items.put(itemId, currentItem);
-        return currentItem;
+        items.put(item.getId(), item);
+        return item;
     }
 
     @Override

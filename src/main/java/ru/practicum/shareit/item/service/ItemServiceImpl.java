@@ -63,7 +63,9 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item getItem(Long itemId) {
-        return itemRepository.findItemByItemId(itemId);
+        Item item = itemRepository.findItemByItemId(itemId);
+        if (item == null) throw new ItemNotFoundException(itemId);
+        return item;
     }
 
     @Override
@@ -73,7 +75,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<Item> searchItems(String text) {
-        if (text.isEmpty()) return List.of();
+        if (text.isBlank()) return List.of();
         return itemRepository.findItemsByQuery(text);
     }
 }
