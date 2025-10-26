@@ -39,7 +39,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UserNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ValidationErrorResponse handleUserNotFoundException(UserNotFoundException e, HttpServletRequest r) {
-        log.warn("Пользователь не найден: {}", e.getMessage());
+        log.warn("Пользователь не найден: {}", e.getErrors());
 
         List<ErrorResponse> errors = e.getErrors().stream().toList();
 
@@ -56,7 +56,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UserFoundException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ValidationErrorResponse handleUserFoundException(UserFoundException e, HttpServletRequest r) {
-        log.warn("Пользователь найден: {}", e.getMessage());
+        log.warn("Пользователь найден: {}", e.getErrors());
 
         List<ErrorResponse> errors = e.getErrors().stream().toList();
 
@@ -73,7 +73,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotOwnerException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ValidationErrorResponse handleNotOwnerException(NotOwnerException e, HttpServletRequest r) {
-        log.warn("Запрет доступа: {}", e.getMessage());
+        log.warn("Запрет доступа: {}", e.getErrors());
 
         List<ErrorResponse> errors = e.getErrors().stream().toList();
 
@@ -90,7 +90,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ItemNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ValidationErrorResponse handleItemNotFoundException(ItemNotFoundException e, HttpServletRequest r) {
-        log.warn("Предмет не найден: {}", e.getMessage());
+        log.warn("Предмет не найден: {}", e.getErrors());
 
         List<ErrorResponse> errors = e.getErrors().stream().toList();
 

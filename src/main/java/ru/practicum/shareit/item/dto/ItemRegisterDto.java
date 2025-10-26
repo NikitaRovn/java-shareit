@@ -8,14 +8,14 @@ import lombok.Data;
 public class ItemRegisterDto {
     @NotNull(message = "Поле name должно быть передано.")
     @NotBlank(message = "Поле name не должно быть пустой строкой или строкой из пробелов.")
-    String name;
+    private String name;
 
     @NotNull(message = "Поле description должно быть передано.")
     @NotBlank(message = "Поле description не должно быть пустой строкой или строкой из пробелов.")
-    String description;
+    private String description;
 
     @NotNull(message = "Поле available должно быть передано.")
-    Boolean available;
+    private Boolean available;
 
-    Long ownerId;
+    private Long ownerId;
 }

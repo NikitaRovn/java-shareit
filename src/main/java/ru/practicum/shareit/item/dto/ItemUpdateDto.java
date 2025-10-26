@@ -4,13 +4,13 @@ import lombok.Data;
 
 @Data
 public class ItemUpdateDto {
-    Long id;
+    private Long id;
 
-    String name;
+    private String name;
 
-    String description;
+    private String description;
 
-    Boolean available;
+    private Boolean available;
 
-    Long ownerId;
+    private Long ownerId;
 }

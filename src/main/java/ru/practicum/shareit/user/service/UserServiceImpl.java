@@ -20,7 +20,9 @@ public class UserServiceImpl implements UserService {
         User userToSave = UserMapper.mapFromUserRegisterDtoToUser(userRegisterDto);
         String email = userRegisterDto.getEmail();
         User userWithSameEmail = userRepository.findUserByUserEmail(email);
-        if (userWithSameEmail != null) throw new UserFoundException(email);
+        if (userWithSameEmail != null) {
+            throw new UserFoundException(email);
+        }
         return userRepository.saveUser(userToSave);
     }
 
@@ -28,7 +30,9 @@ public class UserServiceImpl implements UserService {
     public User updateUser(UserUpdateDto userUpdateDto) {
         Long userId = userUpdateDto.getId();
         User userToUpdate = userRepository.findUserByUserId(userId);
-        if (userToUpdate == null) throw new UserNotFoundException(userId);
+        if (userToUpdate == null) {
+            throw new UserNotFoundException(userId);
+        }
 
         userToUpdate.setName(
                 userUpdateDto.getName() != null ? userUpdateDto.getName() : userToUpdate.getName()
@@ -42,22 +46,24 @@ public class UserServiceImpl implements UserService {
             }
             userToUpdate.setEmail(newEmail);
         }
-
         return userRepository.updateUser(userToUpdate);
     }
 
     @Override
     public User getUser(Long userId) {
         User user = userRepository.findUserByUserId(userId);
-        if (user == null) throw new UserNotFoundException(userId);
+        if (user == null) {
+            throw new UserNotFoundException(userId);
+        }
         return user;
     }
 
     @Override
     public void deleteUser(Long userId) {
         User userToDelete = userRepository.findUserByUserId(userId);
-        if (userToDelete == null) throw new UserNotFoundException(userId);
-
+        if (userToDelete == null) {
+            throw new UserNotFoundException(userId);
+        }
         userRepository.deleteUser(userId);
     }
 }

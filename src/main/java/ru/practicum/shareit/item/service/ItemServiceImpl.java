@@ -27,8 +27,9 @@ public class ItemServiceImpl implements ItemService {
         Item itemToSave = ItemMapper.mapFromItemRegisterDtoToItem(itemRegisterDto);
         Long ownerId = itemToSave.getOwner().getId();
         User owner = userRepository.findUserByUserId(ownerId);
-        if (owner == null) throw new UserNotFoundException(ownerId);
-
+        if (owner == null) {
+            throw new UserNotFoundException(ownerId);
+        }
         return itemRepository.saveItem(itemToSave);
     }
 
@@ -36,7 +37,9 @@ public class ItemServiceImpl implements ItemService {
     public Item updateItem(ItemUpdateDto itemUpdateDto) {
         Long itemId = itemUpdateDto.getId();
         Item itemToUpdate = itemRepository.findItemByItemId(itemId);
-        if (itemToUpdate == null) throw new ItemNotFoundException(itemId);
+        if (itemToUpdate == null) {
+            throw new ItemNotFoundException(itemId);
+        }
 
         if (!Objects.equals(itemToUpdate.getOwner().getId(), itemUpdateDto.getOwnerId())) {
             throw new NotOwnerException(itemId);
@@ -51,14 +54,15 @@ public class ItemServiceImpl implements ItemService {
         if (itemUpdateDto.getAvailable() != null) {
             itemToUpdate.setAvailable(itemUpdateDto.getAvailable());
         }
-
         return itemRepository.updateItem(itemToUpdate);
     }
 
     @Override
     public Item getItem(Long itemId) {
         Item item = itemRepository.findItemByItemId(itemId);
-        if (item == null) throw new ItemNotFoundException(itemId);
+        if (item == null) {
+            throw new ItemNotFoundException(itemId);
+        }
         return item;
     }
 
@@ -69,7 +73,9 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<Item> searchItems(String text) {
-        if (text.isBlank()) return List.of();
+        if (text.isBlank()) {
+            return List.of();
+        }
         return itemRepository.findItemsByQuery(text);
     }
 }

@@ -6,9 +6,9 @@ import lombok.Data;
 @Data
 @Builder
 public class UserUpdateDto {
-    Long id;
+    private Long id;
 
-    String name;
+    private String name;
 
-    String email;
+    private String email;
 }

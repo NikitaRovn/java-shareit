@@ -13,6 +13,9 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ItemMapper {
     public static ItemDto mapFromItemToItemDto(Item item) {
+        if (item == null) {
+            return new ItemDto();
+        }
         return ItemDto.builder()
                 .id(item.getId())
                 .name(item.getName())
@@ -22,27 +25,36 @@ public final class ItemMapper {
     }
 
     public static List<ItemDto> mapFromListItemToListItemDto(List<Item> items) {
+        if (items == null) {
+            return List.of();
+        }
         return items.stream()
                 .map(ItemMapper::mapFromItemToItemDto)
                 .toList();
     }
 
     public static Item mapFromItemRegisterDtoToItem(ItemRegisterDto itemRegisterDto) {
+        if (itemRegisterDto == null) {
+            return new Item();
+        }
+
         User owner = User.builder()
                 .id(itemRegisterDto.getOwnerId())
                 .build();
 
         return Item.builder()
-                .id(null)
                 .name(itemRegisterDto.getName())
                 .description(itemRegisterDto.getDescription())
                 .available(itemRegisterDto.getAvailable())
                 .owner(owner)
-                .request(null)
                 .build();
     }
 
     public static Item mapFromItemUpdateDtoToItem(ItemUpdateDto itemUpdateDto) {
+        if (itemUpdateDto == null) {
+            return new Item();
+        }
+
         User owner = User.builder()
                 .id(itemUpdateDto.getOwnerId())
                 .build();
@@ -53,7 +65,6 @@ public final class ItemMapper {
                 .description(itemUpdateDto.getDescription())
                 .available(itemUpdateDto.getAvailable())
                 .owner(owner)
-                .request(null)
                 .build();
     }
 }

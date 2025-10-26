@@ -10,6 +10,9 @@ import ru.practicum.shareit.user.model.User;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class UserMapper {
     public static UserDto mapFromUserToUserDto(User user) {
+        if (user == null) {
+            return new UserDto();
+        }
         return UserDto.builder()
                 .id(user.getId())
                 .name(user.getName())
@@ -18,14 +21,19 @@ public final class UserMapper {
     }
 
     public static User mapFromUserRegisterDtoToUser(UserRegisterDto userRegisterDto) {
+        if (userRegisterDto == null) {
+            return new User();
+        }
         return User.builder()
-                .id(null)
                 .name(userRegisterDto.getName())
                 .email(userRegisterDto.getEmail())
                 .build();
     }
 
     public static User mapFromUserUpdateDtoToUser(UserUpdateDto userUpdateDto) {
+        if (userUpdateDto == null) {
+            return new User();
+        }
         return User.builder()
                 .id(userUpdateDto.getId())
                 .name(userUpdateDto.getName())
