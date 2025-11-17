@@ -25,34 +25,34 @@ public class ItemController {
     private final ItemService itemService;
 
     @PostMapping
-    ItemDto addItem(@Valid @RequestBody ItemRegisterDto itemRegisterDto,
+    public ItemDto addItem(@Valid @RequestBody ItemRegisterDto itemRegisterDto,
                     @RequestHeader("X-Sharer-User-Id") Long ownerId) {
         itemRegisterDto.setOwnerId(ownerId);
         return ItemMapper.mapFromItemToItemDto(itemService.addItem(itemRegisterDto));
     }
 
-    @PatchMapping("/{itemId}")
-    ItemDto updateItem(@RequestBody ItemUpdateDto itemUpdateDto,
+    @PatchMapping("/{id}")
+    public ItemDto updateItem(@RequestBody ItemUpdateDto itemUpdateDto,
                        @RequestHeader("X-Sharer-User-Id") Long userId,
-                       @PathVariable Long itemId) {
-        itemUpdateDto.setId(itemId);
+                       @PathVariable Long id) {
+        itemUpdateDto.setId(id);
         itemUpdateDto.setOwnerId(userId);
-        return ItemMapper.mapFromItemToItemDto(itemService.updateItem(itemUpdateDto));
+        return ItemMapper.mapFromItemToItemDto(itemService.updateItem(id, itemUpdateDto));
     }
 
     @GetMapping("/{itemId}")
-    ItemDto getItem(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public ItemDto getItem(@RequestHeader("X-Sharer-User-Id") Long userId,
                     @PathVariable Long itemId) {
         return ItemMapper.mapFromItemToItemDto(itemService.getItem(itemId));
     }
 
     @GetMapping
-    List<ItemDto> getYourItems(@RequestHeader("X-Sharer-User-Id") Long userId) {
+    public List<ItemDto> getYourItems(@RequestHeader("X-Sharer-User-Id") Long userId) {
         return ItemMapper.mapFromListItemToListItemDto(itemService.getYourItems(userId));
     }
 
     @GetMapping("/search")
-    List<ItemDto> searchItems(@RequestParam String text) {
+    public List<ItemDto> searchItems(@RequestParam(required = false) String text) {
         return ItemMapper.mapFromListItemToListItemDto(itemService.searchItems(text));
     }
 }

@@ -10,7 +10,6 @@ import ru.practicum.shareit.item.dto.ItemUpdateDto;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
-import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.List;
@@ -26,56 +25,65 @@ public class ItemServiceImpl implements ItemService {
     public Item addItem(ItemRegisterDto itemRegisterDto) {
         Item itemToSave = ItemMapper.mapFromItemRegisterDtoToItem(itemRegisterDto);
         Long ownerId = itemToSave.getOwner().getId();
-        User owner = userRepository.findUserByUserId(ownerId);
-        if (owner == null) {
+
+        if (!userRepository.existsById(ownerId)) {
             throw new UserNotFoundException(ownerId);
         }
-        return itemRepository.saveItem(itemToSave);
+
+        return itemRepository.save(itemToSave);
     }
 
     @Override
-    public Item updateItem(ItemUpdateDto itemUpdateDto) {
-        Long itemId = itemUpdateDto.getId();
-        Item itemToUpdate = itemRepository.findItemByItemId(itemId);
-        if (itemToUpdate == null) {
-            throw new ItemNotFoundException(itemId);
-        }
+    public Item updateItem(Long id, ItemUpdateDto itemUpdateDto) {
+        Item itemToUpdate = itemRepository.findById(id)
+                .orElseThrow(() -> new ItemNotFoundException(id));
+
+        Item itemUpdated = ItemMapper.mapFromItemUpdateDtoToItem(itemUpdateDto);
 
         if (!Objects.equals(itemToUpdate.getOwner().getId(), itemUpdateDto.getOwnerId())) {
-            throw new NotOwnerException(itemId);
+            throw new NotOwnerException(id);
         }
 
-        if (itemUpdateDto.getName() != null) {
-            itemToUpdate.setName(itemUpdateDto.getName());
+        if (itemUpdated.getName() != null) {
+            itemToUpdate.setName(itemUpdated.getName());
         }
-        if (itemUpdateDto.getDescription() != null) {
-            itemToUpdate.setDescription(itemUpdateDto.getDescription());
+        if (itemUpdated.getDescription() != null) {
+            itemToUpdate.setDescription(itemUpdated.getDescription());
         }
-        if (itemUpdateDto.getAvailable() != null) {
-            itemToUpdate.setAvailable(itemUpdateDto.getAvailable());
+        if (itemUpdated.getIsAvailable() != null) {
+            itemToUpdate.setIsAvailable(itemUpdated.getIsAvailable());
         }
-        return itemRepository.updateItem(itemToUpdate);
+        return itemRepository.save(itemToUpdate);
     }
 
     @Override
-    public Item getItem(Long itemId) {
-        Item item = itemRepository.findItemByItemId(itemId);
-        if (item == null) {
-            throw new ItemNotFoundException(itemId);
+    public Item getItem(Long id) {
+        return getExistingItem(id);
+    }
+
+    @Override
+    public List<Item> getYourItems(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new UserNotFoundException(id);
         }
-        return item;
+        return itemRepository.findByOwnerId(id);
     }
 
     @Override
-    public List<Item> getYourItems(Long userId) {
-        return itemRepository.findItemsByUserId(userId);
-    }
-
-    @Override
-    public List<Item> searchItems(String text) {
-        if (text.isBlank()) {
+    public List<Item> searchItems(String query) {
+        if (query == null || query.isBlank()) {
             return List.of();
         }
-        return itemRepository.findItemsByQuery(text);
+        return itemRepository.search(query);
+    }
+
+    @Override
+    public void deleteItem(Long id) {
+        getExistingItem(id);
+        itemRepository.deleteById(id);
+    }
+
+    private Item getExistingItem(Long id) {
+        return itemRepository.findById(id).orElseThrow(() -> new ItemNotFoundException(id));
     }
 }

@@ -20,7 +20,7 @@ public final class ItemMapper {
                 .id(item.getId())
                 .name(item.getName())
                 .description(item.getDescription())
-                .available(item.getAvailable())
+                .available(item.getIsAvailable())
                 .build();
     }
 
@@ -45,7 +45,7 @@ public final class ItemMapper {
         return Item.builder()
                 .name(itemRegisterDto.getName())
                 .description(itemRegisterDto.getDescription())
-                .available(itemRegisterDto.getAvailable())
+                .isAvailable(itemRegisterDto.getAvailable())
                 .owner(owner)
                 .build();
     }
@@ -63,7 +63,7 @@ public final class ItemMapper {
                 .id(itemUpdateDto.getId())
                 .name(itemUpdateDto.getName())
                 .description(itemUpdateDto.getDescription())
-                .available(itemUpdateDto.getAvailable())
+                .isAvailable(itemUpdateDto.getAvailable())
                 .owner(owner)
                 .build();
     }

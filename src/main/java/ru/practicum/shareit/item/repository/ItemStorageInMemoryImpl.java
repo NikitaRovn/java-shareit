@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-public class ItemRepositoryInMemoryImpl implements ItemRepository {
+public class ItemStorageInMemoryImpl implements ItemStorage {
     private final Map<Long, Item> items = new HashMap<>();
     private static Long lastId = 1L;
 
@@ -49,7 +49,7 @@ public class ItemRepositoryInMemoryImpl implements ItemRepository {
         return items.values().stream()
                 .filter(el -> el.getName().toLowerCase().contains(q)
                         || el.getDescription().toLowerCase().contains(q))
-                .filter(el -> Boolean.TRUE.equals(el.getAvailable()))
+                .filter(el -> Boolean.TRUE.equals(el.getIsAvailable()))
                 .toList();
     }
 }

@@ -53,9 +53,9 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(UserFoundException.class)
+    @ExceptionHandler(UserAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ValidationErrorResponse handleUserFoundException(UserFoundException e, HttpServletRequest r) {
+    public ValidationErrorResponse handleUserFoundException(UserAlreadyExistsException e, HttpServletRequest r) {
         log.warn("Пользователь найден: {}", e.getErrors());
 
         List<ErrorResponse> errors = e.getErrors().stream().toList();

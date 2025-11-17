@@ -9,11 +9,13 @@ import java.util.List;
 public interface ItemService {
     Item addItem(ItemRegisterDto itemRegisterDto);
 
-    Item updateItem(ItemUpdateDto itemUpdateDto);
+    Item updateItem(Long id, ItemUpdateDto itemUpdateDto);
 
-    Item getItem(Long itemId);
+    Item getItem(Long id);
 
-    List<Item> getYourItems(Long userId);
+    List<Item> getYourItems(Long id);
 
     List<Item> searchItems(String text);
+
+    void deleteItem(Long id);
 }
