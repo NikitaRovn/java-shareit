@@ -1,8 +1,10 @@
 package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.BookingMapper;
+import ru.practicum.shareit.booking.StateBooking;
 import ru.practicum.shareit.booking.StatusBooking;
 import ru.practicum.shareit.booking.dto.BookingRegisterDto;
 import ru.practicum.shareit.booking.dto.BookingUpdateDto;
@@ -109,16 +111,69 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<Booking> getListYourBooking(Long id, String state) {
-        return List.of();
+        if (!userRepository.existsById(id)) {
+            throw new UserNotFoundException(id);
+        }
+
+        StateBooking bookingState = StateBooking.from(state);
+        LocalDateTime now = LocalDateTime.now();
+        Sort sort = Sort.by(Sort.Direction.DESC, "start");
+
+        return switch (bookingState) {
+            case ALL -> bookingRepository.findByBooker_Id(id, sort);
+
+            case CURRENT -> bookingRepository
+                    .findByBooker_IdAndStartBeforeAndEndAfter(id, now, now, sort);
+
+            case PAST -> bookingRepository
+                    .findByBooker_IdAndEndBefore(id, now, sort);
+
+            case FUTURE -> bookingRepository
+                    .findByBooker_IdAndStartAfter(id, now, sort);
+
+            case WAITING -> bookingRepository
+                    .findByBooker_IdAndStatus(id, StatusBooking.WAITING, sort);
+
+            case REJECTED -> bookingRepository
+                    .findByBooker_IdAndStatus(id, StatusBooking.REJECTED, sort);
+        };
     }
 
     @Override
     public List<Booking> getListYourItemsBooking(Long id, String state) {
-        return List.of();
+        if (!userRepository.existsById(id)) {
+            throw new UserNotFoundException(id);
+        }
+
+        StateBooking bookingState = StateBooking.from(state);
+        LocalDateTime now = LocalDateTime.now();
+        Sort sort = Sort.by(Sort.Direction.DESC, "start");
+
+        return switch (bookingState) {
+            case ALL -> bookingRepository.findByItem_Owner_Id(id, sort);
+
+            case CURRENT -> bookingRepository
+                    .findByItem_Owner_IdAndStartBeforeAndEndAfter(id, now, now, sort);
+
+            case PAST -> bookingRepository
+                    .findByItem_Owner_IdAndEndBefore(id, now, sort);
+
+            case FUTURE -> bookingRepository
+                    .findByItem_Owner_IdAndStartAfter(id, now, sort);
+
+            case WAITING -> bookingRepository
+                    .findByItem_Owner_IdAndStatus(id, StatusBooking.WAITING, sort);
+
+            case REJECTED -> bookingRepository
+                    .findByItem_Owner_IdAndStatus(id, StatusBooking.REJECTED, sort);
+        };
     }
 
     @Override
     public void deleteBooking(Long id) {
-
+        if (!bookingRepository.existsById(id)) {
+            throw new BookingNotFoundException(id);
+        }
+        bookingRepository.deleteById(id);
     }
 }

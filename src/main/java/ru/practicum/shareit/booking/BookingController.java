@@ -26,15 +26,15 @@ public class BookingController {
 
     @PostMapping
     public BookingDto addBooking(@Valid @RequestBody BookingRegisterDto bookingRegisterDto,
-                          @RequestHeader("X-Sharer-User-Id") Long bookerId) {
+                                 @RequestHeader("X-Sharer-User-Id") Long bookerId) {
         bookingRegisterDto.setBookerId(bookerId);
         return BookingMapper.mapFromBookingToBookingDto(bookingService.addBooking(bookingRegisterDto));
     }
 
     @PatchMapping("/{id}")
     public BookingDto changeBookingStatus(@RequestParam Boolean approved,
-                                   @RequestHeader("X-Sharer-User-Id") Long ownerId,
-                                   @PathVariable Long id) {
+                                          @RequestHeader("X-Sharer-User-Id") Long ownerId,
+                                          @PathVariable Long id) {
         BookingUpdateDto bookingUpdateDto = BookingUpdateDto.builder()
                 .id(id)
                 .ownerId(ownerId)
@@ -46,19 +46,19 @@ public class BookingController {
 
     @GetMapping("/{id}")
     public BookingDto getBooking(@RequestHeader("X-Sharer-User-Id") Long userId,
-                          @PathVariable Long id) {
+                                 @PathVariable Long id) {
         return BookingMapper.mapFromBookingToBookingDto(bookingService.getBooking(id, userId));
     }
 
     @GetMapping
     public List<BookingDto> getListYourBooking(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                        @RequestParam(defaultValue = "ALL") String state) {
+                                               @RequestParam(defaultValue = "ALL") String state) {
         return BookingMapper.mapFromListBookingToListBookingDto(bookingService.getListYourBooking(userId, state));
     }
 
     @GetMapping("/owner")
     public List<BookingDto> getListYourItemsBooking(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                             @RequestParam(defaultValue = "ALL") String state) {
+                                                    @RequestParam(defaultValue = "ALL") String state) {
         return BookingMapper.mapFromListBookingToListBookingDto(bookingService.getListYourItemsBooking(userId, state));
     }
 }

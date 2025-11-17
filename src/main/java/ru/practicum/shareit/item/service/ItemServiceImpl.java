@@ -2,16 +2,25 @@ package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.exception.BookingNotFoundException;
 import ru.practicum.shareit.exception.ItemNotFoundException;
 import ru.practicum.shareit.exception.NotOwnerException;
 import ru.practicum.shareit.exception.UserNotFoundException;
+import ru.practicum.shareit.item.CommentMapper;
+import ru.practicum.shareit.item.dto.CommentRegisterDto;
 import ru.practicum.shareit.item.dto.ItemRegisterDto;
 import ru.practicum.shareit.item.dto.ItemUpdateDto;
 import ru.practicum.shareit.item.ItemMapper;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -20,6 +29,8 @@ import java.util.Objects;
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
+    private final BookingRepository bookingRepository;
+    private final CommentRepository commentRepository;
 
     @Override
     public Item addItem(ItemRegisterDto itemRegisterDto) {
@@ -81,6 +92,19 @@ public class ItemServiceImpl implements ItemService {
     public void deleteItem(Long id) {
         getExistingItem(id);
         itemRepository.deleteById(id);
+    }
+
+    @Override
+    public Comment addComment(CommentRegisterDto commentRegisterDto) {
+        Long itemId = commentRegisterDto.getItemId();
+        Item item = getExistingItem(itemId);
+        Long userId = commentRegisterDto.getUserId();
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+        Booking booking = bookingRepository.findByItemAndBookerAndEndBefore(item, user, LocalDateTime.now())
+                .orElseThrow(() -> new BookingNotFoundException(itemId));
+
+        return commentRepository.save(CommentMapper.mapFromCommentRegisterDtoToComment(commentRegisterDto));
     }
 
     private Item getExistingItem(Long id) {
