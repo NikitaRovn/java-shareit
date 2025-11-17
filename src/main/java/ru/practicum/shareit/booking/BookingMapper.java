@@ -21,14 +21,9 @@ public class BookingMapper {
                 .id(booking.getId())
                 .start(booking.getStart())
                 .end(booking.getEnd())
-                .status(booking.getStatus().name())
-                .booker(BookingDto.Booker.builder()
-                        .id(booking.getBooker().getId())
-                        .build())
-                .item(BookingDto.BookedItem.builder()
-                        .id(booking.getItem().getId())
-                        .name(booking.getItem().getName())
-                        .build())
+                .status(booking.getStatus())
+                .booker(booking.getBooker())
+                .item(booking.getItem())
                 .build();
     }
 
