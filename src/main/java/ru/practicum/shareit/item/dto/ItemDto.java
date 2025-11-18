@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -14,4 +16,17 @@ public class ItemDto {
     private String name;
     private String description;
     private Boolean available;
+
+    private BookingShort lastBooking;
+    private BookingShort nextBooking;
+    private List<CommentDto> comments;
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    public static class BookingShort {
+        private Long id;
+        private Long bookerId;
+    }
 }
+

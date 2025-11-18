@@ -212,4 +212,21 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(InvalidStateBookingException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ValidationErrorResponse handleInvalidStateBooking(InvalidStateBookingException e,
+                                                             HttpServletRequest r) {
+        log.warn("Некорректный state бронирования: {}", e.getErrors());
+
+        List<ErrorResponse> errors = e.getErrors().stream().toList();
+
+        return new ValidationErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                "Некорректный параметр state.",
+                r.getRequestURI(),
+                errors
+        );
+    }
 }

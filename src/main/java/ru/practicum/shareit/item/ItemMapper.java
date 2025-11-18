@@ -13,14 +13,14 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ItemMapper {
     public static ItemDto mapFromItemToItemDto(Item item) {
-        if (item == null) {
-            return new ItemDto();
-        }
         return ItemDto.builder()
                 .id(item.getId())
                 .name(item.getName())
                 .description(item.getDescription())
                 .available(item.getIsAvailable())
+                .lastBooking(item.getLastBooking())
+                .nextBooking(item.getNextBooking())
+                .comments(item.getComments())
                 .build();
     }
 
