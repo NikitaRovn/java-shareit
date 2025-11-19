@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.practicum.shareit.booking.dto.BookingShortDto;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.request.model.Request;
@@ -48,10 +49,10 @@ public class Item {
     private Request request;
 
     @Transient
-    private ItemDto.BookingShort lastBooking;
+    private BookingShortDto lastBooking;
 
     @Transient
-    private ItemDto.BookingShort nextBooking;
+    private BookingShortDto nextBooking;
 
     @Transient
     private List<CommentDto> comments;

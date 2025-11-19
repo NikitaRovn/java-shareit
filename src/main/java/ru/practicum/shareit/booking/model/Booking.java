@@ -46,7 +46,7 @@ public class Booking {
     @JoinColumn(name = "booker_id", nullable = false)
     private User booker;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private StatusBooking status;
 }

@@ -51,7 +51,7 @@ public class ItemController {
 
     @GetMapping
     public List<ItemDto> getYourItems(@RequestHeader("X-Sharer-User-Id") Long userId) {
-        return ItemMapper.mapFromListItemToListItemDto(itemService.getYourItems(userId));
+        return itemService.getYourItems(userId);
     }
 
     @GetMapping("/search")
