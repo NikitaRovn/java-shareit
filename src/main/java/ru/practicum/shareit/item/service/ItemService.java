@@ -14,15 +14,11 @@ public interface ItemService {
 
     Item updateItem(Long id, ItemUpdateDto itemUpdateDto);
 
-    ItemDto getItem(Long id);
-
     ItemDto getItem(Long itemId, Long userId);
 
     List<Item> getYourItems(Long id);
 
     List<Item> searchItems(String text);
-
-    void deleteItem(Long id);
 
     Comment addComment(CommentRegisterDto commentRegisterDto);
 }

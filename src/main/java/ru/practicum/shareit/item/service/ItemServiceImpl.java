@@ -71,11 +71,6 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto getItem(Long id) {
-        return null;
-    }
-
-    @Override
     public ItemDto getItem(Long id, Long userId) {
         Item item = getExistingItem(id);
 
@@ -126,37 +121,38 @@ public class ItemServiceImpl implements ItemService {
 
         LocalDateTime now = LocalDateTime.now();
 
-        return itemRepository.findByOwnerId(ownerId).stream()
-                .peek(item -> {
-                    Long itemId = item.getId();
+        List<Item> items = itemRepository.findByOwnerId(ownerId);
 
-                    ItemDto.BookingShort last =
-                            bookingRepository.findFirstByItem_IdAndStartBeforeOrderByEndDesc(itemId, now)
-                                    .map(b -> ItemDto.BookingShort.builder()
-                                            .id(b.getId())
-                                            .bookerId(b.getBooker().getId())
-                                            .build())
-                                    .orElse(null);
+        for (Item item : items) {
+            Long itemId = item.getId();
 
-                    ItemDto.BookingShort next =
-                            bookingRepository.findFirstByItem_IdAndStartAfterOrderByStartAsc(itemId, now)
-                                    .map(b -> ItemDto.BookingShort.builder()
-                                            .id(b.getId())
-                                            .bookerId(b.getBooker().getId())
-                                            .build())
-                                    .orElse(null);
+            ItemDto.BookingShort last =
+                    bookingRepository.findFirstByItem_IdAndStartBeforeOrderByEndDesc(itemId, now)
+                            .map(b -> ItemDto.BookingShort.builder()
+                                    .id(b.getId())
+                                    .bookerId(b.getBooker().getId())
+                                    .build())
+                            .orElse(null);
 
-                    List<CommentDto> comments = commentRepository.findByItem_Id(itemId).stream()
-                            .map(CommentMapper::mapFromCommentToCommentDto)
-                            .toList();
+            ItemDto.BookingShort next =
+                    bookingRepository.findFirstByItem_IdAndStartAfterOrderByStartAsc(itemId, now)
+                            .map(b -> ItemDto.BookingShort.builder()
+                                    .id(b.getId())
+                                    .bookerId(b.getBooker().getId())
+                                    .build())
+                            .orElse(null);
 
-                    item.setLastBooking(last);
-                    item.setNextBooking(next);
-                    item.setComments(comments);
-                })
-                .toList();
+            List<CommentDto> comments = commentRepository.findByItem_Id(itemId).stream()
+                    .map(CommentMapper::mapFromCommentToCommentDto)
+                    .toList();
+
+            item.setLastBooking(last);
+            item.setNextBooking(next);
+            item.setComments(comments);
+        }
+
+        return items;
     }
-
 
     @Override
     public List<Item> searchItems(String query) {
@@ -164,12 +160,6 @@ public class ItemServiceImpl implements ItemService {
             return List.of();
         }
         return itemRepository.search(query);
-    }
-
-    @Override
-    public void deleteItem(Long id) {
-        getExistingItem(id);
-        itemRepository.deleteById(id);
     }
 
     @Override
