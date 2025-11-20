@@ -70,22 +70,4 @@ public final class ItemMapper {
                 .owner(owner)
                 .build();
     }
-
-    public static Item mapFromItemUpdateDtoToItem(ItemUpdateDto itemUpdateDto) {
-        if (itemUpdateDto == null) {
-            return new Item();
-        }
-
-        User owner = User.builder()
-                .id(itemUpdateDto.getOwnerId())
-                .build();
-
-        return Item.builder()
-                .id(itemUpdateDto.getId())
-                .name(itemUpdateDto.getName())
-                .description(itemUpdateDto.getDescription())
-                .isAvailable(itemUpdateDto.getAvailable())
-                .owner(owner)
-                .build();
-    }
 }
