@@ -9,17 +9,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.shareit.booking.dto.BookingShortDto;
-import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.request.model.Request;
 import ru.practicum.shareit.user.model.User;
-
-import java.util.List;
 
 @Data
 @Entity
@@ -46,13 +41,4 @@ public class Item {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "request_id")
     private Request request;
-
-    @Transient
-    private BookingShortDto lastBooking;
-
-    @Transient
-    private BookingShortDto nextBooking;
-
-    @Transient
-    private List<CommentDto> comments;
 }

@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
@@ -38,6 +37,7 @@ public class ItemServiceImpl implements ItemService {
     private final CommentRepository commentRepository;
 
     @Override
+    @Transactional
     public Item addItem(ItemRegisterDto itemRegisterDto) {
         Item itemToSave = ItemMapper.mapFromItemRegisterDtoToItem(itemRegisterDto);
         Long ownerId = itemToSave.getOwner().getId();
@@ -50,6 +50,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public Item updateItem(Long id, ItemUpdateDto itemUpdateDto) {
         Item item = itemRepository.findById(id)
                 .orElseThrow(() -> new ItemNotFoundException(id));
@@ -145,6 +146,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public Comment addComment(CommentRegisterDto commentRegisterDto) {
         Long itemId = commentRegisterDto.getItemId();
         Item item = getExistingItem(itemId);

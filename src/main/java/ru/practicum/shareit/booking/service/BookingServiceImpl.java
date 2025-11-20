@@ -31,13 +31,13 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
 
     @Override
+    @Transactional
     public Booking addBooking(BookingRegisterDto bookingRegisterDto) {
         Long bookerId = bookingRegisterDto.getBookerId();
         User booker = userRepository.findById(bookerId)
@@ -69,6 +69,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional
     public Booking changeBookingStatus(BookingUpdateDto bookingUpdateDto) {
         Long bookingId = bookingUpdateDto.getId();
         Booking booking = bookingRepository.findById(bookingId)
@@ -172,6 +173,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional
     public void deleteBooking(Long id) {
         if (!bookingRepository.existsById(id)) {
             throw new BookingNotFoundException(id);

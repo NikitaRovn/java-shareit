@@ -12,12 +12,12 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
+    @Transactional
     public User registerUser(UserRegisterDto userRegisterDto) {
         User userToSave = UserMapper.mapFromUserRegisterDtoToUser(userRegisterDto);
         String email = userRegisterDto.getEmail();
@@ -30,6 +30,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public User updateUser(Long id, UserUpdateDto userUpdateDto) {
         User userToUpdate = getExistingUser(id);
 
@@ -54,6 +55,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void deleteUser(Long id) {
         getExistingUser(id);
         userRepository.deleteById(id);
