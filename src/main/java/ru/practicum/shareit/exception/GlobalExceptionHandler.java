@@ -53,9 +53,9 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(UserFoundException.class)
+    @ExceptionHandler(UserAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ValidationErrorResponse handleUserFoundException(UserFoundException e, HttpServletRequest r) {
+    public ValidationErrorResponse handleUserFoundException(UserAlreadyExistsException e, HttpServletRequest r) {
         log.warn("Пользователь найден: {}", e.getErrors());
 
         List<ErrorResponse> errors = e.getErrors().stream().toList();
@@ -99,6 +99,132 @@ public class GlobalExceptionHandler {
                 HttpStatus.NOT_FOUND.value(),
                 HttpStatus.NOT_FOUND.getReasonPhrase(),
                 "Предмет не найден.",
+                r.getRequestURI(),
+                errors
+        );
+    }
+
+    @ExceptionHandler(InvalidBookingTimeException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ValidationErrorResponse handleInvalidBookingTimeException(InvalidBookingTimeException e,
+                                                                     HttpServletRequest r) {
+        log.warn("Некорректные даты бронирования: {}", e.getErrors());
+
+        List<ErrorResponse> errors = e.getErrors().stream().toList();
+
+        return new ValidationErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                "Некорректные даты бронирования.",
+                r.getRequestURI(),
+                errors
+        );
+    }
+
+    @ExceptionHandler(ItemUnavailableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ValidationErrorResponse handleItemUnavailableException(ItemUnavailableException e,
+                                                                  HttpServletRequest r) {
+        log.warn("Вещь недоступна для бронирования: {}", e.getErrors());
+
+        List<ErrorResponse> errors = e.getErrors().stream().toList();
+
+        return new ValidationErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                "Вещь недоступна для бронирования.",
+                r.getRequestURI(),
+                errors
+        );
+    }
+
+    @ExceptionHandler(BookingNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ValidationErrorResponse handleBookingNotFoundException(BookingNotFoundException e,
+                                                                  HttpServletRequest r) {
+        log.warn("Бронирование не найдено: {}", e.getErrors());
+
+        List<ErrorResponse> errors = e.getErrors().stream().toList();
+
+        return new ValidationErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.NOT_FOUND.value(),
+                HttpStatus.NOT_FOUND.getReasonPhrase(),
+                "Бронирование не найдено.",
+                r.getRequestURI(),
+                errors
+        );
+    }
+
+    @ExceptionHandler(BookingAlreadyApprovedException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ValidationErrorResponse handleBookingAlreadyApprovedException(BookingAlreadyApprovedException e,
+                                                                         HttpServletRequest r) {
+        log.warn("Бронирование уже подтверждено: {}", e.getErrors());
+
+        List<ErrorResponse> errors = e.getErrors().stream().toList();
+
+        return new ValidationErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                "Бронирование уже подтверждено.",
+                r.getRequestURI(),
+                errors
+        );
+    }
+
+    @ExceptionHandler(BookingOwnerItemException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ValidationErrorResponse handleBookingOwnerItemException(BookingOwnerItemException e,
+                                                                   HttpServletRequest r) {
+        log.warn("Попытка забронировать свою же вещь: {}", e.getErrors());
+
+        List<ErrorResponse> errors = e.getErrors().stream().toList();
+
+        return new ValidationErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                "Нельзя бронировать собственную вещь.",
+                r.getRequestURI(),
+                errors
+        );
+    }
+
+    @ExceptionHandler(BookingNotOwnerException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ValidationErrorResponse handleBookingNotOwnerException(BookingNotOwnerException e,
+                                                                  HttpServletRequest r) {
+        log.warn("Доступ к бронированию запрещён: {}", e.getErrors());
+
+        List<ErrorResponse> errors = e.getErrors().stream().toList();
+
+        return new ValidationErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.FORBIDDEN.value(),
+                HttpStatus.FORBIDDEN.getReasonPhrase(),
+                "Вы не владелец этого бронирования.",
+                r.getRequestURI(),
+                errors
+        );
+    }
+
+    @ExceptionHandler(InvalidStateBookingException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ValidationErrorResponse handleInvalidStateBooking(InvalidStateBookingException e,
+                                                             HttpServletRequest r) {
+        log.warn("Некорректный state бронирования: {}", e.getErrors());
+
+        List<ErrorResponse> errors = e.getErrors().stream().toList();
+
+        return new ValidationErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                "Некорректный параметр state.",
                 r.getRequestURI(),
                 errors
         );

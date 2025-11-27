@@ -7,9 +7,9 @@ import ru.practicum.shareit.user.model.User;
 public interface UserService {
     User registerUser(UserRegisterDto userRegisterDto);
 
-    User updateUser(UserUpdateDto userUpdateDto);
+    User updateUser(Long id, UserUpdateDto userUpdateDto);
 
-    User getUser(Long userId);
+    User getUser(Long id);
 
-    void deleteUser(Long userId);
+    void deleteUser(Long id);
 }

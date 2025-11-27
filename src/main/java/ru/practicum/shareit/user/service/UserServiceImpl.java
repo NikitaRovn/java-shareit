@@ -2,7 +2,8 @@ package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exception.UserFoundException;
+import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.exception.UserAlreadyExistsException;
 import ru.practicum.shareit.exception.UserNotFoundException;
 import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.dto.UserRegisterDto;
@@ -16,54 +17,51 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
+    @Transactional
     public User registerUser(UserRegisterDto userRegisterDto) {
         User userToSave = UserMapper.mapFromUserRegisterDtoToUser(userRegisterDto);
         String email = userRegisterDto.getEmail();
-        User userWithSameEmail = userRepository.findUserByUserEmail(email);
-        if (userWithSameEmail != null) {
-            throw new UserFoundException(email);
+
+        if (userRepository.existsByEmail(email)) {
+            throw new UserAlreadyExistsException(email);
         }
-        return userRepository.saveUser(userToSave);
+
+        return userRepository.save(userToSave);
     }
 
     @Override
-    public User updateUser(UserUpdateDto userUpdateDto) {
-        Long userId = userUpdateDto.getId();
-        User userToUpdate = userRepository.findUserByUserId(userId);
-        if (userToUpdate == null) {
-            throw new UserNotFoundException(userId);
+    @Transactional
+    public User updateUser(Long id, UserUpdateDto userUpdateDto) {
+        User userToUpdate = getExistingUser(id);
+
+        if (userUpdateDto.getName() != null) {
+            userToUpdate.setName(userUpdateDto.getName());
         }
 
-        userToUpdate.setName(
-                userUpdateDto.getName() != null ? userUpdateDto.getName() : userToUpdate.getName()
-        );
-
         String newEmail = userUpdateDto.getEmail();
-        if (newEmail != null) {
-            User existing = userRepository.findUserByUserEmail(newEmail);
-            if (existing != null && !existing.getId().equals(userToUpdate.getId())) {
-                throw new UserFoundException(newEmail);
+        if (newEmail != null && !newEmail.equals(userToUpdate.getEmail())) {
+            if (userRepository.existsByEmailAndIdNot(newEmail, id)) {
+                throw new UserAlreadyExistsException(newEmail);
             }
             userToUpdate.setEmail(newEmail);
         }
-        return userRepository.updateUser(userToUpdate);
+
+        return userRepository.save(userToUpdate);
     }
 
     @Override
-    public User getUser(Long userId) {
-        User user = userRepository.findUserByUserId(userId);
-        if (user == null) {
-            throw new UserNotFoundException(userId);
-        }
-        return user;
+    public User getUser(Long id) {
+        return getExistingUser(id);
     }
 
     @Override
-    public void deleteUser(Long userId) {
-        User userToDelete = userRepository.findUserByUserId(userId);
-        if (userToDelete == null) {
-            throw new UserNotFoundException(userId);
-        }
-        userRepository.deleteUser(userId);
+    @Transactional
+    public void deleteUser(Long id) {
+        getExistingUser(id);
+        userRepository.deleteById(id);
+    }
+
+    private User getExistingUser(Long id) {
+        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
     }
 }

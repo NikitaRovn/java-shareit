@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Repository
-public class UserRepositoryInMemoryImpl implements UserRepository {
+public class UserStorageInMemoryImpl implements UserStorage {
     private final Map<Long, User> users = new HashMap<>();
     private static Long lastId = 1L;
 
