@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ru.practicum.shareit.exception.InvalidBookingTimeException;
 
 @RestController
 @RequestMapping("/bookings")
@@ -23,9 +24,11 @@ public class BookingController {
     @PostMapping
     public ResponseEntity<Object> addBooking(@RequestHeader("X-Sharer-User-Id") Long userId,
                                              @Valid @RequestBody BookingRegisterDto dto) {
+
         if (!dto.getStart().isBefore(dto.getEnd())) {
-            throw new IllegalArgumentException("Дата начала должна быть раньше даты окончания.");
+            throw new InvalidBookingTimeException();
         }
+
         return bookingClient.addBooking(userId, dto);
     }
 
